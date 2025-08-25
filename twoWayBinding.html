@@ -1,0 +1,71 @@
+<!-- /*  What is Two-Way Binding?
+When changing an input updates the object
+
+And changing the object updates the input
+
+✅ Plan:
+Create an object with a value property
+Use Object.defineProperty or Proxy to intercept updates
+When input changes → update object
+When object changes → update input value
+ -->
+<!-- file: index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Two-way Data Binding</title>
+</head>
+<body>
+
+  <input type="text" id="myInput" />
+  <p>Live Value: <span id="display"></span></p>
+
+  <script>
+    function createBinding(obj, prop, element) {
+      let internalValue = obj[prop];
+
+      Object.defineProperty(obj, prop, {
+        get() {
+          return internalValue;
+        },
+        set(newValue) {
+          internalValue = newValue;
+          element.value = newValue;          // update input
+          document.getElementById('display').textContent = newValue; // update display
+        }
+      });
+
+      // Input listener → update object
+      element.addEventListener('input', (e) => {
+        obj[prop] = e.target.value;
+         console.log(data.text,'--data.text'); // Initial value
+      });
+    }
+
+    const data = { text: '' };
+    const inputEl = document.getElementById('myInput');
+
+    createBinding(data, 'text', inputEl);
+    console.log(data.text,'--data.text'); // Initial value
+    console.log(inputEl.value,'--inputEl.value'); // Initial value
+    // simulate JS-side update after 2s
+    setTimeout(() => {
+      data.text = 'Updated from JS';
+    }, 5000);
+  </script>
+
+</body>
+</html>
+
+
+<!-- ✅ How It Works
+We create a binding between data.text and <input>
+
+Any update to:
+
+input → updates data.text
+
+data.text → updates input and display
+
+All this is done using Object.defineProperty() (or you could use Proxy)
+ -->
